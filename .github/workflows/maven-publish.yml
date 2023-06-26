@@ -26,6 +26,7 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+       mkdir package && cp target/*.war package 
     - name: Analyze with SonarCloud
       run:  mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=devopsnishu_github-example-package
       env:
@@ -42,9 +43,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Java-jar
-        path: |
-          src/target/*.jar
-          src/target/*.zip
+        path: package
 
     -
       name: Login to Docker Hub
