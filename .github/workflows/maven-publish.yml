@@ -33,7 +33,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     -  name: API with curl
        run: |  
-            curl -u ${{ secrets.SONAR_TOKEN }} https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage/github.json
+            curl -u ${{ secrets.SONAR_TOKEN }} https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage&metric=alert_status
               
     - name: Test with Maven
       run: mvn -B test --file pom.xml
