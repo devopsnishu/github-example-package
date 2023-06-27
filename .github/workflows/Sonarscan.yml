@@ -13,7 +13,10 @@ jobs:
     
     
       - name: Run SonarCloud analysis
-        run: sonar-scanner
+        run:  mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=devopsnishu_github-example-package
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Compare SonarCloud result with threshold
         env: 
