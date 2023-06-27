@@ -32,34 +32,46 @@ jobs:
       env:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    -  name: API with curl
-       env: 
-         Coverage_value: 10
-         CODE_SMELLS_value: 50
-         Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage" 
-       run: | 
-            
-            curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> github.json
-            cat $PWD/github.json
-            
-             
-    - name: Compare SonarCloud result with threshold
-      env: 
-          coverage_threshold: 80
+    - name: Install jq
+      run: sudo apt-get install -y jq
+ 
+    - name: Retrieve SonarCloud details
+      id: sonarcloud-details
       run: |
-                 
-                    if ["$metric"== "coverage"]
-                  
-                     if [["coverage" -lt coverage_threshold]]; then
-                      echo "Coverage= passed" >>github.json
-                      exit 1
-                     elif [["coverage" -lt coverage_threshold ]]; then
-                     echo "Coverage= failed" >>github.json
-                     else
-                      echo "Unable to determine Coverage status."
-                      exit 1
-                     fi     
-              
+          # Extract the project key from SonarCloud analysis
+          project_key=$(grep 'sonar.projectKey' sonar-project.properties | cut -d'=' -f2)
+
+          # Fetch the quality gate details using SonarCloud API
+          response=$(curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${project_key}")
+
+          # Extract relevant details from the response
+          quality_gate_status=$(echo "${response}" | jq -r '.projectStatus.status')
+          quality_gate_conditions=$(echo "${response}" | jq -r '.projectStatus.conditions[] | select(.metricKey == "alert_status")')
+
+          # Extract threshold value from the conditions
+          threshold=$(echo "${quality_gate_conditions}" | jq -r '.errorThreshold')
+
+          # Output the details for further usage
+          echo "::set-output name=quality_gate_status::${quality_gate_status}"
+          echo "::set-output name=threshold::${threshold}"
+
+    - name: Compare SonarCloud result with threshold
+      run: |
+          # Threshold value for the quality gate
+          threshold=${{ steps.sonarcloud-details.outputs.threshold }}
+
+          # Quality gate status
+          quality_gate_status=${{ steps.sonarcloud-details.outputs.quality_gate_status }}
+
+          if [[ "${quality_gate_status}" == "ERROR" ]]; then
+            echo "Quality gate failed. SonarCloud analysis did not meet the threshold."
+            exit 1
+          elif [[ "${quality_gate_status}" == "OK" ]]; then
+            echo "Quality gate passed. SonarCloud analysis meets the threshold."
+          else
+            echo "Unable to determine the quality gate status."
+            exit 1
+          fi
      
           
        
