@@ -1,0 +1,33 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sonarcloud-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    
+      - name: Run SonarCloud analysis
+        run: sonar-scanner
+
+      - name: Compare SonarCloud result with threshold
+         
+        env: 
+          coverage_threshold:80
+        run: |
+                  curl -u ${{ secrets.SONAR_TOKEN }} -OL https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage
+
+                     if [$(value) -lt coverage_threshold]; then
+                      echo "Coverage= passed >>github.json
+                      exit 1
+                  elif [[ "${quality_gate_status}" == "OK" ]]; then
+            echo "Quality gate passed. SonarCloud analysis meets the threshold."
+          else
+            echo "Unable to determine the quality gate status."
+            exit 1
+          fi
