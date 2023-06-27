@@ -48,12 +48,12 @@ jobs:
           coverage_threshold: 80
       run: |
                  
-                
+                    if ["$metric"== "coverage"]
                   
-                     if [["$Value" -lt coverage_threshold]]; then
+                     if [["coverage" -lt coverage_threshold]]; then
                       echo "Coverage= passed" >>github.json
                       exit 1
-                     elif [[ "$Value -lt coverage_threshold ]]; then
+                     elif [["coverage" -lt coverage_threshold ]]; then
                      echo "Coverage= failed" >>github.json
                      else
                       echo "Unable to determine Coverage status."
