@@ -38,7 +38,7 @@ jobs:
          CODE_SMELLS_value: 50
           
        run: | 
-            Value = $(curl -u ${{ secrets.SONAR_TOKEN }} -OL https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage)) 
+            Value = (curl -u ${{ secrets.SONAR_TOKEN }} -OL https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage)) 
             
              
     - name: Compare SonarCloud result with threshold
