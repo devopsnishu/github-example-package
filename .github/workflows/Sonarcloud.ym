@@ -1,0 +1,34 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sonarcloud-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    
+      - name: Run SonarCloud analysis
+        run: sonar-scanner
+
+      - name: Compare SonarCloud result with threshold
+        run: |
+          # Threshold value for the quality gate
+          threshold=80
+
+            
+         quality_gate_status=$(curl -s "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=alert_status" | jq -r '.projectStatus.status')
+
+          if [[ "${quality_gate_status}" == "ERROR" ]]; then
+            echo "Quality gate failed. SonarCloud analysis did not meet the threshold."
+            exit 1
+          elif [[ "${quality_gate_status}" == "OK" ]]; then
+            echo "Quality gate passed. SonarCloud analysis meets the threshold."
+          else
+            echo "Unable to determine the quality gate status."
+            exit 1
+          fi
