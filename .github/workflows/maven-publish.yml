@@ -39,7 +39,7 @@ jobs:
           
        run: | 
              threshold=80
-             quality_gate_status=$(curl -s https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=alert_status)
+             quality_gate_status=$(curl -s https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=alert_status | jq -r '.projectStatus.status')
           
               if [[ "${quality_gate_status}" == "ERROR" ]]; then
                 echo "Quality gate failed. SonarCloud analysis did not meet the threshold."
