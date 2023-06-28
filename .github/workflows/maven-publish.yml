@@ -33,6 +33,7 @@ jobs:
     - name: Install jq
       run: sudo apt-get install -y jq
     -  name: API with curl
+       shell: bash
        env: 
          Coverage_value: 10
          CODE_SMELLS_value: 50
@@ -60,7 +61,7 @@ jobs:
                fi
              
                 
-                
+             
                 
                 
  
