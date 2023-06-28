@@ -40,7 +40,7 @@ jobs:
          Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage" 
        run: | 
             
-            curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> github.json
+            curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> ./github.json
             cat $PWD/github.json
             while read jsonDate ;
             do 
@@ -60,8 +60,8 @@ jobs:
                 echo "Coverage is fail"
                fi
              
-               done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
-               cat $PWD/Response.json 
+               done <<< $(jq -c '.component.measures[]' $PWD/github.json)
+               cat $PWD/github.json 
              
                 
                 
