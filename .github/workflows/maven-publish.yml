@@ -60,7 +60,8 @@ jobs:
                 echo "Coverage is fail"
                fi
              
-                
+               done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
+               cat $PWD/Response.json 
              
                 
                 
