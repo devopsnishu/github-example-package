@@ -30,7 +30,8 @@ jobs:
       env:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
+    - name: Install jq
+      run: sudo apt-get install -y jq
     -  name: API with curl
        env: 
          Coverage_value: 10
@@ -40,7 +41,22 @@ jobs:
             
             curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> github.json
             cat $PWD/github.json
-            
+            while read jsonDate ;
+            do 
+             metric=$(jq -r '.metric' <<< $jsonData)
+             value=$(jq -r '.value' <<< $jsonData)
+             echo "$metric"
+             if ["$metric" == "coverage"]
+              then
+               if [ "${value%.*}" -lt ${{env.Coverage_value}} ]
+               echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
+               echo "Actual $(metric%.*) - ${value%.*} "
+               echo "Coverage is fail"
+               exit 1
+               fi
+             
+             
+             
     - name: Install jq
       run: sudo apt-get install -y jq
 
