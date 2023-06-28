@@ -63,9 +63,7 @@ jobs:
           # Threshold value for the quality gate
           threshold_code_smells=100
           threshold_coverage=80
-          
-           -name: Compare the metrics with threshold values
-           run: |
+ 
            
              if (( $(echo "${code_smells} > ${threshold_code_smells}" | bc -l) )); then
               echo "code_smells_status=Pass,Actual is ${code_smells},Expected is ${threshold_code_smells}"
