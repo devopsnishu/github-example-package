@@ -48,15 +48,16 @@ jobs:
              echo "$metric"
              
                if [ "${value%.*}" -lt ${{env.Coverage_value}} ]
+                then
+                 echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
+                 echo "Actual $(metric%.*) - ${value%.*} "
+                 echo "Coverage is fail"
+                 exit 1
+                else
                 echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
                 echo "Actual $(metric%.*) - ${value%.*} "
                 echo "Coverage is fail"
-                exit 1
-               else
-                echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
-                echo "Actual $(metric%.*) - ${value%.*} "
-                echo "Coverage is fail"
-              fi
+               fi
              
                 
                 
