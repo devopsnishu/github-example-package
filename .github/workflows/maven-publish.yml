@@ -67,29 +67,18 @@ jobs:
            
              if (( $(echo "${code_smells} > ${threshold_code_smells}" | bc -l) )); then
               echo "code_smells_status=Pass,Actual is ${code_smells},Expected is ${threshold_code_smells}"
-            else
-             echo "code_smells_status=Fail ,Actual is ${code_smells},Expected is ${threshold_code_smells}"
+             else
+              echo "code_smells_status=Fail ,Actual is ${code_smells},Expected is ${threshold_code_smells}"
             fi
 
             if (( $(echo "${coverage} < ${threshold_coverage}" | bc -l) )); then
-            echo "coverage_status=Fail, Actual is ${coverage},Expected is ${threshold_coverage}"
-          else
+             echo "coverage_status=Fail, Actual is ${coverage},Expected is ${threshold_coverage}"
+           else
             echo "coverage_status=Pass,  Actual is ${coverage},Expected is ${threshold_coverage}"
            fi
      
 
-          # Create the output JSON object
-          output_json=$(jq -n \
-            
-            --arg code_smells "${code_smells}" \
-            --arg code_smells_status "${code_smells_status}" \
-            --arg coverage "${coverage}" \
-            --arg coverage_status "${coverage_status}" \
-            '{"code_smells": $code_smells, "code_smells_status": $code_smells_status, "coverage": $coverage, "coverage_status": $coverage_status}')
-
-          # Save the output JSON to a file
-          echo "${output_json}" > sonarcloud_output.json
-
+         
           
        
     - name: Test with Maven
