@@ -46,8 +46,7 @@ jobs:
              metric=$(jq -r '.metric' <<< $jsonData)
              value=$(jq -r '.value' <<< $jsonData)
              echo "$metric"
-             if ["$metric" == "coverage"]
-              then
+             
                if [ "${value%.*}" -lt ${{env.Coverage_value}} ]
                 echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
                 echo "Actual $(metric%.*) - ${value%.*} "
@@ -58,9 +57,7 @@ jobs:
                 echo "Actual $(metric%.*) - ${value%.*} "
                 echo "Coverage is fail"
               fi
-             else
-              echo "byr"
-             fi
+             
                 
                 
                 
