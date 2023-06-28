@@ -60,7 +60,7 @@ jobs:
           echo "::set-output name=code_smells::${code_smells}"
     - name: Compare SonarCloud result with threshold
       run: |
-          # Threshold value for the quality gate
+          
           threshold_code_smells=100
           threshold_coverage=80
  
@@ -80,12 +80,12 @@ jobs:
 
           # Create the output JSON object
           output_json=$(jq -n \
-            --arg quality_gate_status "${quality_gate_status}" \
+            
             --arg code_smells "${code_smells}" \
             --arg code_smells_status "${code_smells_status}" \
             --arg coverage "${coverage}" \
             --arg coverage_status "${coverage_status}" \
-            '{"quality_gate_status": $quality_gate_status, "code_smells": $code_smells, "code_smells_status": $code_smells_status, "coverage": $coverage, "coverage_status": $coverage_status}')
+            '{"code_smells": $code_smells, "code_smells_status": $code_smells_status, "coverage": $coverage, "coverage_status": $coverage_status}')
 
           # Save the output JSON to a file
           echo "${output_json}" > sonarcloud_output.json
