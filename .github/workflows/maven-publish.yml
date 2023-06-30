@@ -52,36 +52,36 @@ jobs:
 
             if [ "$metric" == "coverage" ] ;
               then
-                if [ "${value%.*}" -lt ${{env.COVERAGE-THRESHOLD }} ] ;
+                if [ "${value%.*}" -lt ${{env.Coverage_value }} ] ;
                   then
-                    echo "Expected ${metric%.*} - ${{env.COVERAGE_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.Coverage_value}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Failed"
                     exit 1
                   else
-                    echo "Expected ${metric%.*} - ${{env.COVERAGE_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.Coverage_value}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
 
             elif [ "$metric" == "code_smells" ] ;
               then
-                if [ "${value%.*}" -gt ${{env.CODE_SMELLS_THRESHOLD }} ] ;
+                if [ "${value%.*}" -gt ${{env.CODE_SMELLS_value }} ] ;
                   then
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_value}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Failed"
                     exit 1
                   else
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_value}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
-             
+             fi
                 
                 
  
-               
+            
              
              
              
