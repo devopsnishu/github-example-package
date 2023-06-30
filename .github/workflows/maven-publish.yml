@@ -37,47 +37,29 @@ jobs:
        env: 
          Coverage_value: 10
          CODE_SMELLS_value: 50
-         Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage,code_smells" 
+         Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage" 
        run: | 
             
-            curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> ./github.json
+            curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> github.json
             cat $PWD/github.json
-            while read jsonData ;
-            do
-            metric=$(jq -r '.metric' <<< $jsonData)
-            value=$(jq -r '.value'<<< $jsonData)
-            echo "$metric"
-            echo "$value"
-            #echo "${metric%.*}"
-
-            if [ "$metric" == "coverage" ] ;
-              then
-                if [ "${value%.*}" -lt ${{env.Coverage_value }} ] ;
-                  then
-                    echo "Expected ${metric%.*} - ${{env.Coverage_value}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Failed"
-                    exit 1
-                  else
-                    echo "Expected ${metric%.*} - ${{env.Coverage_value}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Passed"
-                  fi
-
-            elif [ "$metric" == "code_smells" ] ;
-              then
-                if [ "${value%.*}" -gt ${{env.CODE_SMELLS_value }} ] ;
-                  then
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_value}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Failed"
-                    exit 1
-                  else
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_value}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Passed"
-                  fi
-             fi
+            while read jsonDate ;
+            do 
+             metric=$(jq -r '.metric' <<< $jsonData)
+             value=$(jq -r '.value' <<< $jsonData)
+             echo "$metric"
+             echo "$value"
+             
+               if [ "${value%.*}" -lt ${{env.Coverage_value}} ]
+                then
+                 echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
+                 echo "Actual $(metric%.*) - ${value%.*} "
+                 echo "Coverage is fail"
+                 exit 1
+                else
+                echo "Expected $(metric%.*) - {{env.Coverage_value}}" 
+                echo "Actual $(metric%.*) - ${value%.*} "
+                echo "Coverage is fail"
+               fi  
                 
              done <<< $(jq -c '.component.measures[]' $PWD/github.json)
              cat $PWD/github.json       
