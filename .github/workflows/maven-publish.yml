@@ -37,7 +37,7 @@ jobs:
        env: 
          Coverage_value: 10
          CODE_SMELLS_value: 50
-         Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage" 
+         Value: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage,code_smells" 
        run: | 
             
             curl -u ${{ secrets.SONAR_TOKEN }} -OL "$Value" >> ./github.json
