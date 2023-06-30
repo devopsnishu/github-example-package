@@ -39,7 +39,7 @@ jobs:
          CODE_SMELLS_value: 50
          Value1: "https://sonarcloud.io/api/project_badges/measure?project=devopsnishu_github-example-package&metric=coverage" 
        run: | 
-            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage&component=devopsnishu_github-example-package' --header 'Authorization: Bearer 48f212d738dfc4cd7ca0c2567f61b88209467d0b' > ./github.json 
+            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./github.json 
            
             cat $PWD/github.json
             while read jsonDate ;
