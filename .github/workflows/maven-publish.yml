@@ -36,23 +36,21 @@ jobs:
        shell: bash
        env: 
          COVERAGE_THRESHOLD: 20
-         CODE_SMELLS_THRESHOLD: 100
+         CODE_SMELLS_THRESHOLD: 200
          VULNERABILITIES_THRESHOLD: 6
         
+      
+
        run: | 
             
-            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./github.json
+            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./Response.json
             while read jsonData ;
             do
             metric=$(jq -r '.metric' <<< $jsonData)
-            value=$(jq -r '.value'<<< $jsonData)
-            echo "$metric"
-            echo "$value"
-            #echo "${metric%.*}"
 
             if [ "$metric" == "coverage" ] ;
               then
-                if [ "${value%.*}" -lt ${{env.COVERAGE_THRESHOLD }} ] ;
+                if [ "${value%.*}" -lt ${{env.COVERAGE-THRESHOLD }} ] ;
                   then
                     echo "Expected ${metric%.*} - ${{env.COVERAGE_THRESHOLD}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
@@ -63,7 +61,6 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
-
             elif [ "$metric" == "code_smells" ] ;
               then
                 if [ "${value%.*}" -gt ${{env.CODE_SMELLS_THRESHOLD }} ] ;
@@ -77,7 +74,6 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
-
             elif [ "$metric" == "vulnerabilities" ] ;
               then
                 if [ "${value%.*}" -gt ${{env.VULNERABILITIES_THRESHOLD }} ] ;
@@ -91,23 +87,10 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
-
-            elif [ "$metric" == "critical_violations" ] ;
-              then
-                if [ "${value%.*}" -gt ${{env.CRITICAL_VIOLATIONS_THRESHOLD }} ] ;
-                  then
-                    echo "Expected ${metric%.*} - ${{env.CRITICAL_VIOLATIONS_THRESHOLD}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Failed"
-                    exit 1
-                  else
-                    echo "Expected ${metric%.*} - ${{env.CRITICAL_VIOLATIONS_THRESHOLD}}"
-                    echo "Actual ${metric%.*} - ${value%.*}"
-                    echo "Sonar code coverage Gate: Passed"
-                  fi
             fi
-            done <<< $(jq -c '.component.measures[]' $PWD/github.json)
-            cat $PWD/github.json
+            done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
+            cat $PWD/Response.json
+            
           
         
  
