@@ -41,7 +41,7 @@ jobs:
         
        run: | 
             
-            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=ramandevopsnew_java-maven-app' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./Response.json
+            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./Response.json
             while read jsonData ;
             do
             metric=$(jq -r '.metric' <<< $jsonData)
