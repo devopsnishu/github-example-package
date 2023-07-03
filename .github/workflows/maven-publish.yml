@@ -47,6 +47,10 @@ jobs:
             while read jsonData ;
             do
             metric=$(jq -r '.metric' <<< $jsonData)
+            value=$(jq -r '.value'<<< $jsonData)
+            echo "$metric"
+            echo "$value"
+            #echo "${metric%.*}"
 
             if [ "$metric" == "coverage" ] ;
               then
@@ -61,6 +65,7 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
+
             elif [ "$metric" == "code_smells" ] ;
               then
                 if [ "${value%.*}" -gt ${{env.CODE_SMELLS_THRESHOLD }} ] ;
@@ -74,6 +79,7 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
+
             elif [ "$metric" == "vulnerabilities" ] ;
               then
                 if [ "${value%.*}" -gt ${{env.VULNERABILITIES_THRESHOLD }} ] ;
@@ -87,15 +93,26 @@ jobs:
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
+
+            elif [ "$metric" == "critical_violations" ] ;
+              then
+                if [ "${value%.*}" -gt ${{env.CRITICAL_VIOLATIONS_THRESHOLD }} ] ;
+                  then
+                    echo "Expected ${metric%.*} - ${{env.CRITICAL_VIOLATIONS_THRESHOLD}}"
+                    echo "Actual ${metric%.*} - ${value%.*}"
+                    echo "Sonar code coverage Gate: Failed"
+                    exit 1
+                  else
+                    echo "Expected ${metric%.*} - ${{env.CRITICAL_VIOLATIONS_THRESHOLD}}"
+                    echo "Actual ${metric%.*} - ${value%.*}"
+                    echo "Sonar code coverage Gate: Passed"
+                  fi
             fi
-            done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
-            cat $PWD/Response.json
+          done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
+          cat $PWD/Response.json
             
           
-        
- 
-            
-             
+      
        
      
     - name: Test with Maven
