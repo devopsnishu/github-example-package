@@ -35,13 +35,13 @@ jobs:
     -  name: API with curl
        shell: bash
        env: 
-         COVERAGE_THRESHOLD: 20
-         CODE_SMELLS_THRESHOLD: 200
-         VULNERABILITIES_THRESHOLD: 6
+         Threshold_COVERAGE: 10
+         THRESHOLD_CODE_SMELLS: 50
+         THRESHOLD_VULNERABILITIES: 5
         
        run: | 
             
-            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./Response.json
+            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./github.json
             while read jsonData ;
             do
             metric=$(jq -r '.metric' <<< $jsonData)
@@ -52,42 +52,42 @@ jobs:
 
             if [ "$metric" == "coverage" ] ;
               then
-                if [ "${value%.*}" -lt ${{env.COVERAGE-THRESHOLD }} ] ;
+                if [ "${value%.*}" -lt ${{env.Threshold_COVERAGE }} ] ;
                   then
-                    echo "Expected ${metric%.*} - ${{env.COVERAGE_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.Threshold_COVERAGE}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Failed"
                     exit 1
                   else
-                    echo "Expected ${metric%.*} - ${{env.COVERAGE_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.Threshold_COVERAGE}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
 
             elif [ "$metric" == "code_smells" ] ;
               then
-                if [ "${value%.*}" -gt ${{env.CODE_SMELLS_THRESHOLD }} ] ;
+                if [ "${value%.*}" -gt ${{env.THRESHOLD_CODE_SMELLS }} ] ;
                   then
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.THRESHOLD_CODE_SMELLS}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Failed"
                     exit 1
                   else
-                    echo "Expected ${metric%.*} - ${{env.CODE_SMELLS_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.THRESHOLD_CODE_SMELLS}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
 
             elif [ "$metric" == "vulnerabilities" ] ;
               then
-                if [ "${value%.*}" -gt ${{env.VULNERABILITIES_THRESHOLD }} ] ;
+                if [ "${value%.*}" -gt ${{env.THRESHOLD_VULNERABILITIES }} ] ;
                   then
-                    echo "Expected ${metric%.*} - ${{env.VULNERABILITIES_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.THRESHOLD_VULNERABILITIES}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Failed"
                     exit 1
                   else
-                    echo "Expected ${metric%.*} - ${{env.VULNERABILITIES_THRESHOLD}}"
+                    echo "Expected ${metric%.*} - ${{env.THRESHOLD_VULNERABILITIES}}"
                     echo "Actual ${metric%.*} - ${value%.*}"
                     echo "Sonar code coverage Gate: Passed"
                   fi
@@ -106,8 +106,8 @@ jobs:
                     echo "Sonar code coverage Gate: Passed"
                   fi
             fi
-            done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
-            cat $PWD/Response.json
+            done <<< $(jq -c '.component.measures[]' $PWD/github.json)
+            cat $PWD/github.json
           
         
  
