@@ -108,8 +108,8 @@ jobs:
                     echo "Sonar code coverage Gate: Passed"
                   fi
             fi
-          done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
-          cat $PWD/Response.json
+            done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
+            cat $PWD/Response.json
             
           
       
