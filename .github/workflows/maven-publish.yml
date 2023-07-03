@@ -36,14 +36,14 @@ jobs:
        shell: bash
        env: 
          COVERAGE_THRESHOLD: 20
-         CODE_SMELLS_THRESHOLD: 200
-         VULNERABILITIES_THRESHOLD: 6
+         CODE_SMELLS_THRESHOLD: 100
+         VULNERABILITIES_THRESHOLD: 5
         
       
 
        run: | 
             
-            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./Response.json
+            curl --location --request GET 'https://sonarcloud.io/api/measures/component?metricKeys=code_smells,coverage,duplicated_lines_density,vulnerabilities,security_hotspots,critical_violations,bugs&component=devopsnishu_github-example-package' --header 'Authorization: Bearer ${{ secrets.SONAR_TOKEN }}' > ./github.json
             while read jsonData ;
             do
             metric=$(jq -r '.metric' <<< $jsonData)
@@ -108,8 +108,8 @@ jobs:
                     echo "Sonar code coverage Gate: Passed"
                   fi
             fi
-            done <<< $(jq -c '.component.measures[]' $PWD/Response.json)
-            cat $PWD/Response.json
+            done <<< $(jq -c '.component.measures[]' $PWD/github.json)
+            cat $PWD/github.json
             
           
       
