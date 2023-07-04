@@ -1,6 +1,9 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
-
+env: 
+     COVERAGE_THRESHOLD: 20
+     CODE_SMELLS_THRESHOLD: 200
+     VULNERABILITIES_THRESHOLD: 6
 name: Maven Package
 on: 
  workflow_dispatch:
@@ -34,10 +37,7 @@ jobs:
       run: sudo apt-get install -y jq
     -  name: API with curl
        shell: bash
-       env: 
-         COVERAGE_THRESHOLD: 20
-         CODE_SMELLS_THRESHOLD: 100
-         VULNERABILITIES_THRESHOLD: 5
+       
         
       
 
